@@ -8,6 +8,7 @@ for target in "${urls[@]}"
 do
     curl -kv "$target"
 done
+python ./EndToEnd.py
 curl https://splus-wip3.pnistaging.com/services/printing/business-cards/ | grep -o '<a .*href=.*>' | sed -e 's/<a /\n<a /g' | sed -e 's/<a .*href=['"'"'"]//' -e 's/["'"'"'].*$//' -e '/^$/ d' | grep -o '^/.*'>urls.txt
 input="./urls.txt"
 while IFS= read -r line
