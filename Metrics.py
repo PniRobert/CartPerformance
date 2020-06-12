@@ -1,6 +1,7 @@
 from datetime import datetime, timezone, tzinfo, timedelta
 from dateutil import tz
 import numpy as np
+from scipy import stats
 import pandas as pd
 import matplotlib.pyplot as plt
 from pandas.plotting import register_matplotlib_converters
@@ -17,7 +18,7 @@ df = pd.read_csv("u_ex200611.data", sep="\s+", header=0,
 df[timeCol] = pd.to_datetime(
     df["date"] + " " + df["time"], format="%Y%m%d %H:%M:%S", utc=True)
 
-filt = df["cs-uri-stem"] == cartUrl
+filt = (df["cs-uri-stem"] == cartUrl) & (df["sc-status"] == 200)
 cartInfo = df[filt][timeTakenCol]
 
 total = cartInfo.count()
@@ -35,3 +36,5 @@ print("{:.4%}".format(gtrThan1Min/total) +
 print("{:.4%}".format(gtrThan2Min/total) +
       " take less than 5 minutes but more than 2 minutes")
 print("{:.4%}".format(gtrThan5Min/total) + " take more 5 minutes")
+print("Mean:\t" + "{:,.4f}".format(cartInfo.mean()))
+print("Median:\t" + "{:,.4f}".format(cartInfo.median()))
