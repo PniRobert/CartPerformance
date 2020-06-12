@@ -9,25 +9,29 @@ from pandas.plotting import register_matplotlib_converters
 register_matplotlib_converters()
 
 locale = tz.gettz("America/Los_Angeles")
-start = datetime(2020, 6, 10, 18, 0, 0, tzinfo=timezone.utc)
-end = datetime(2020, 6, 10, 19, 0, 0, tzinfo=timezone.utc)
 cartUrl = "/services/printing/Cart"
 timeCol = "log_datetime"
 timeTakenCol = "time-taken"
-df = pd.read_csv("u_ex200610.log", sep="\s+", header=0,
+df = pd.read_csv("u_ex200611.data", sep="\s+", header=0,
                  parse_dates=True, infer_datetime_format=True)
 df[timeCol] = pd.to_datetime(
     df["date"] + " " + df["time"], format="%Y%m%d %H:%M:%S", utc=True)
 
-filt = (df["cs-uri-stem"] == cartUrl
-        ) & (df[timeCol] >= start) & (
-            df[timeCol] < end
-)
+filt = df["cs-uri-stem"] == cartUrl
+cartInfo = df[filt][timeTakenCol]
 
-total = df[filt][timeTakenCol].count()
+total = cartInfo.count()
+lessThan30Snd = cartInfo.loc[cartInfo < 30000].count()
+gtrThan30Snd = cartInfo.loc[cartInfo >= 3000].loc[cartInfo < 60000].count()
+gtrThan1Min = cartInfo.loc[cartInfo >= 60000].loc[cartInfo < 120000].count()
+gtrThan2Min = cartInfo.loc[cartInfo >= 120000].loc[cartInfo < 300000].count()
+gtrThan5Min = cartInfo.loc[cartInfo >= 300000].count()
 
-filt = filt & (df[timeTakenCol] > 120000)
-x = np.vectorize(lambda t: t.astimezone(locale))(df[filt][timeCol].to_numpy())
-y = df[filt][timeTakenCol]
-longRun = y.count()
-print("{:.4%}".format(longRun/total))
+print("{:.4%}".format(lessThan30Snd/total) + " take less than 30 seconds")
+print("{:.4%}".format(gtrThan30Snd/total) +
+      " take less than 1 minutes but more than 30 seconds")
+print("{:.4%}".format(gtrThan1Min/total) +
+      " take less than 2 minutes but more than 1 minutes")
+print("{:.4%}".format(gtrThan2Min/total) +
+      " take less than 5 minutes but more than 2 minutes")
+print("{:.4%}".format(gtrThan5Min/total) + " take more 5 minutes")
