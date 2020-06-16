@@ -38,3 +38,5 @@ print("{:.4%}".format(gtrThan2Min/total) +
 print("{:.4%}".format(gtrThan5Min/total) + " take more 5 minutes")
 print("Mean:\t" + "{:,.4f}".format(cartInfo.mean()))
 print("Median:\t" + "{:,.4f}".format(cartInfo.median()))
+cartInfo.hist(bins=15)
+plt.show()
