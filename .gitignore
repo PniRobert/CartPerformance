@@ -3,3 +3,5 @@
 .vscode/
 *.stackdump
 urls.txt
+test.py
+*.bak
