@@ -231,14 +231,14 @@ async def createConnections():
 
 def launch(p):
     if p > 0:
-        sleep(p*60)
+        sleep(p*300)
     asyncio.run(createConnections())
     return p
 
 
 def main():
     with concurrent.futures.ProcessPoolExecutor() as executor:
-        _ = executor.map(launch, range(100))
+        _ = executor.map(launch, range(1000))
 
 
 if __name__ == "__main__":
