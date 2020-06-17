@@ -189,18 +189,24 @@ async def visitSite(id):
         await setupAsRik(session)
         projectInfo = await getProjectInfo(session)
         await approveProject(session, projectInfo[1])
+        await setPickupLocation(session)
+        print(f"Job {id} will go to shopping cart")
         for _ in range(10):
             await navigateToCartPage(session, projectInfo[0], projectInfo[1])
             await loadCartPage(session, False)
 
-        print("Beging...")
-        #end = datetime.now() + timedelta(minutes=5)
+        print(
+            f"Beging stress at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ...")
+        # end = datetime.now() + timedelta(minutes=10)
         end = datetime.now() + timedelta(hours=12)
-        while datetime.now() < end:
-            try:
+        try:
+            while datetime.now() < end:
                 await stressCart(session)
-            except:
-                continue
+        except:
+            print(f"Job {id} run into issue")
+        finally:
+            print(
+                f"End stress at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ...")
     return id
 
 
@@ -208,7 +214,7 @@ async def createConnections():
     print(
         f"Start at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     tasks = []
-    for jobId in range(1):
+    for jobId in range(25):
         task = asyncio.ensure_future(visitSite(jobId))
         tasks.append(task)
 
@@ -219,21 +225,20 @@ async def createConnections():
             print(
                 f"Finished {id} at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         except:
+            print(f"Job {id} run into issue")
             continue
 
 
 def launch(p):
     if p > 0:
-        sleep(p*300)
+        sleep(p*60)
     asyncio.run(createConnections())
     return p
 
 
 def main():
     with concurrent.futures.ProcessPoolExecutor() as executor:
-        results = executor.map(launch, range(2))
-    for result in results:
-        print(f"{result} has finished")
+        _ = executor.map(launch, range(100))
 
 
 if __name__ == "__main__":
