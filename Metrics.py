@@ -13,7 +13,7 @@ locale = tz.gettz("America/Los_Angeles")
 cartUrl = "/services/printing/Cart"
 timeCol = "log_datetime"
 timeTakenCol = "time-taken"
-df = pd.read_csv("u_ex200611.data", sep="\s+", header=0,
+df = pd.read_csv("log_6_16.data", sep="\s+", header=0,
                  parse_dates=True, infer_datetime_format=True)
 df[timeCol] = pd.to_datetime(
     df["date"] + " " + df["time"], format="%Y%m%d %H:%M:%S", utc=True)

@@ -184,38 +184,38 @@ async def setupAsRik(session):
     return None
 
 
-async def visitSite(id):
+async def visitSite(id, p):
     async with aiohttp.ClientSession() as session:
         await setupAsRik(session)
         projectInfo = await getProjectInfo(session)
         await approveProject(session, projectInfo[1])
         await setPickupLocation(session)
-        print(f"Job {id} will go to shopping cart")
+        print(f"Job {id} of process {p} will go to shopping cart")
         for _ in range(10):
             await navigateToCartPage(session, projectInfo[0], projectInfo[1])
             await loadCartPage(session, False)
 
         print(
-            f"Beging stress at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ...")
-        # end = datetime.now() + timedelta(minutes=10)
-        end = datetime.now() + timedelta(hours=12)
+            f"Job {id} of process {p} beging stress at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ...")
+        # end = datetime.now() + timedelta(minutes=2)
+        end = datetime.now() + timedelta(hours=3)
         try:
             while datetime.now() < end:
                 await stressCart(session)
         except:
-            print(f"Job {id} run into issue")
+            print(f"Job {id} of process {p} run into issue")
         finally:
             print(
-                f"End stress at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ...")
+                f"Job {id} of process {p} end stress at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ...")
     return id
 
 
-async def createConnections():
+async def createConnections(p):
     print(
-        f"Start at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        f"Process {p} started at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     tasks = []
-    for jobId in range(25):
-        task = asyncio.ensure_future(visitSite(jobId))
+    for jobId in range(30):
+        task = asyncio.ensure_future(visitSite(jobId, p))
         tasks.append(task)
 
     await asyncio.gather(*tasks, return_exceptions=True)
@@ -223,22 +223,25 @@ async def createConnections():
         try:
             id = t.result()
             print(
-                f"Finished {id} at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+                f"Finished job {id} of process {p} at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         except:
-            print(f"Job {id} run into issue")
+            print(f"Job {id} of process {p} run into issue")
             continue
 
 
 def launch(p):
     if p > 0:
-        sleep(p*300)
-    asyncio.run(createConnections())
+        sleep(p*120)
+    asyncio.run(createConnections(p))
     return p
 
 
 def main():
-    with concurrent.futures.ProcessPoolExecutor() as executor:
-        _ = executor.map(launch, range(1000))
+    testEnd = datetime.now() + timedelta(hours=12)
+    while datetime.now() < testEnd:
+        with concurrent.futures.ProcessPoolExecutor() as executor:
+            _ = executor.map(launch, range(300))
+        sleep(5400)
 
 
 if __name__ == "__main__":
