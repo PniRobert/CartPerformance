@@ -13,7 +13,7 @@ locale = tz.gettz("America/Los_Angeles")
 cartUrl = "/services/printing/Cart"
 timeCol = "log_datetime"
 timeTakenCol = "time-taken"
-df = pd.read_csv("log_6_16.data", sep="\s+", header=0,
+df = pd.read_csv("log_6_19.data", sep="\s+", header=0,
                  parse_dates=True, infer_datetime_format=True)
 df[timeCol] = pd.to_datetime(
     df["date"] + " " + df["time"], format="%Y%m%d %H:%M:%S", utc=True)
@@ -35,7 +35,7 @@ print("{:.4%}".format(gtrThan1Min/total) +
       " take less than 2 minutes but more than 1 minutes")
 print("{:.4%}".format(gtrThan2Min/total) +
       " take less than 5 minutes but more than 2 minutes")
-print("{:.4%}".format(gtrThan5Min/total) + " take more 5 minutes")
+print("{:.4%}".format(gtrThan5Min/total) + " take more than 5 minutes")
 print("Mean:\t" + "{:,.4f}".format(cartInfo.mean()))
 print("Median:\t" + "{:,.4f}".format(cartInfo.median()))
 cartInfo.hist(bins=15)
