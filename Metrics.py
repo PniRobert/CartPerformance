@@ -13,7 +13,7 @@ locale = tz.gettz("America/Los_Angeles")
 cartUrl = "/services/printing/Cart"
 timeCol = "log_datetime"
 timeTakenCol = "time-taken"
-df = pd.read_csv("log_6_19.data", sep="\s+", header=0,
+df = pd.read_csv("log_6_21.data", sep="\s+", header=0,
                  parse_dates=True, infer_datetime_format=True)
 df[timeCol] = pd.to_datetime(
     df["date"] + " " + df["time"], format="%Y%m%d %H:%M:%S", utc=True)
@@ -28,6 +28,8 @@ gtrThan1Min = cartInfo.loc[cartInfo >= 60000].loc[cartInfo < 120000].count()
 gtrThan2Min = cartInfo.loc[cartInfo >= 120000].loc[cartInfo < 300000].count()
 gtrThan5Min = cartInfo.loc[cartInfo >= 300000].count()
 
+
+print(f"From {df[timeCol].min()} to {df[timeCol].max()} with {total} requests")
 print("{:.4%}".format(lessThan30Snd/total) + " take less than 30 seconds")
 print("{:.4%}".format(gtrThan30Snd/total) +
       " take less than 1 minutes but more than 30 seconds")
