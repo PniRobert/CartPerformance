@@ -13,20 +13,23 @@ locale = tz.gettz("America/Los_Angeles")
 cartUrl = "/services/printing/Cart"
 timeCol = "log_datetime"
 timeTakenCol = "time-taken"
-df = pd.read_csv("log_6_21.data", sep="\s+", header=0,
+df = pd.read_csv("log_6_16.data", sep="\s+", header=0,
                  parse_dates=True, infer_datetime_format=True)
 df[timeCol] = pd.to_datetime(
     df["date"] + " " + df["time"], format="%Y%m%d %H:%M:%S", utc=True)
 
-filt = (df["cs-uri-stem"] == cartUrl) & (df["sc-status"] == 200)
+filt = df["cs-uri-stem"] == cartUrl
 cartInfo = df[filt][timeTakenCol]
 
 total = cartInfo.count()
 lessThan30Snd = cartInfo.loc[cartInfo < 30000].count()
-gtrThan30Snd = cartInfo.loc[cartInfo >= 3000].loc[cartInfo < 60000].count()
-gtrThan1Min = cartInfo.loc[cartInfo >= 60000].loc[cartInfo < 120000].count()
-gtrThan2Min = cartInfo.loc[cartInfo >= 120000].loc[cartInfo < 300000].count()
-gtrThan5Min = cartInfo.loc[cartInfo >= 300000].count()
+lessThan1Min = cartInfo.loc[cartInfo < 60000].count()
+lessThan2Min = cartInfo.loc[cartInfo < 120000].count()
+lesshan5Min = cartInfo.loc[cartInfo < 300000].count()
+gtrThan30Snd = lessThan1Min - lessThan30Snd
+gtrThan1Min = lessThan2Min - lessThan1Min
+gtrThan2Min = lesshan5Min - lessThan2Min
+gtrThan5Min = total - lesshan5Min
 
 
 print(f"From {df[timeCol].min()} to {df[timeCol].max()} with {total} requests")
@@ -40,5 +43,5 @@ print("{:.4%}".format(gtrThan2Min/total) +
 print("{:.4%}".format(gtrThan5Min/total) + " take more than 5 minutes")
 print("Mean:\t" + "{:,.4f}".format(cartInfo.mean()))
 print("Median:\t" + "{:,.4f}".format(cartInfo.median()))
-cartInfo.hist(bins=15)
+cartInfo.hist(bins=30)
 plt.show()

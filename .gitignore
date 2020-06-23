@@ -1,7 +1,13 @@
 *.log
 *.csv
 .vscode/
+.idea/
 *.stackdump
 urls.txt
 test.py
 *.bak
+data/
+iis_logs/
+u_*.*
+TimeTaken.*
+TimeZoneUsing.*
