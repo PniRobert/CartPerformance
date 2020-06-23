@@ -11,3 +11,4 @@ iis_logs/
 u_*.*
 TimeTaken.*
 TimeZoneUsing.*
+LocalStress*.*
