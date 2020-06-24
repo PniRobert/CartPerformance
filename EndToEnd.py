@@ -18,7 +18,7 @@ if __name__ == "__main__":
     try:
         driver.maximize_window()
         driver.get(startUrl)
-        for _ in range(3):
+        for _ in range(10):
             startUrl = f"https://{domainName}{applicationPath}/"
             driver.get(startUrl)
             sleep(2)

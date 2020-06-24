@@ -1,0 +1,8 @@
+From 2020-06-23 02:30:00+00:00 to 2020-06-23 08:29:58+00:00 with 23492 requests
+21.3647% take less than 30 seconds
+32.1343% take less than 1 minutes but more than 30 seconds
+26.2813% take less than 2 minutes but more than 1 minutes 
+20.1303% take less than 5 minutes but more than 2 minutes 
+0.0894% take more than 5 minutes
+Mean of time taken:     74,740 milliseconds
+Median of time taken:   57,820 milliseconds
